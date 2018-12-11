@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Tìm hiểu về Object trong Javascript"
-date:   2018-11-07
+date:   2018-11-07 21:00
 categories: JavaScript
 permalink: /javascript/object
 ---
