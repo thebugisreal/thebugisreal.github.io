@@ -2,7 +2,7 @@
 title: JavaScript từ cơ bản đến căng cơ
 url: "https://thebugisreal.github.io"
 baseurl: ""
-#timezone: Asia/Chongqing
+#timezone: Asia
 description: >
   One or more sentences introducing this blog.
 
@@ -23,13 +23,11 @@ profile_links:
 #disqus_shortname: xxx   # get one: https://disqus.com/admin/signup/
 #duoshuo_shortname: xxx  # get one: http://duoshuo.com/create-site/
 
-excerpt_separator: <!--more-->
-
 header:
   links: # Links on the header. Link to in-site page with a slash as prefix
     About: /about/
-    Vocabulary: /vocabulary/
     Category: /category/
+    Vocabulary: /vocabulary/
     Donate: https://google.com
 
 permalink: /archivers/:title
