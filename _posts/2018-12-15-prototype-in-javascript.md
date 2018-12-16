@@ -4,7 +4,7 @@ title:  "Tìm hiểu về Prototype trong Javascript"
 date:   2018-12-15 21:00
 categories: JavaScript
 permalink: /javascript-prototype
-excerpt: a
+excerpt: Prototype là một khái niềm nền tảng mà tất cả các Javascript developer đều phải hiểu rõ, và bài viết này tập trung vào việc giải thích prototype trong Javascript một cách chi tiết, đơn giản.
 ---
 
 Có 2 concept liên quan đến `prototype` trong Javascript:
@@ -136,3 +136,61 @@ console.log(aBanana.name); // Banana
 console.log(aBanana.showNameAndColor()); // I am a Banana and my color is yellow.
 ```
 
+Lưu ý: method `showNameAndColor` đã được kế thừa lên object `aBanana` vì `aBanana` kế thừa `Fruit` mà `Fruit` lại kế thừa `Plant` thông qua prototype.
+
+Bất kì object nào sử dụng `Fruit` constructor đều sẽ kế thừa toàn bộ tất cả properties và methods của `Fruit.prototype` và của cả `Plant.prototype`. Đây là cách kế thừa chính được triển khai trong Javascript và vai trò không thể thiếu của prototype trong Javascript.
+
+**2. Prototype Attribute: Accessing Properties on Objects**
+
+Prototype cũng quan trọng trong việc truy cập đến các properties và methods của object. `prototype attribute` (hay prototype object) của bất kì object nào chính là `parent` object, nơi mà các thuộc tính kế thừa ban đầu được định nghĩa. This is loosely analogous to the way you might inherit your surname from your father—he is your “prototype parent.” If we wanted to find out where your surname came from, we would first check to see if you created it yourself; if not, the search will move to your prototype parent to see if you inherited it from him. If it was not created by him, the search continues to his father (your father’s prototype parent).
+Similarly, if you want to access a property of an object, the search for the property begins directly on the object. If the JS runtime can’t find the property there, it then looks for the property on the object’s prototype—the object it inherited its properties from.
+
+If the property is not found on the object’s prototype, the search for the property then moves to prototype of the object’s prototype (the father of the object’s father—the grandfather). And this continues until there is no more prototype (no more great-grand father; no more lineage to follow). This in essence is the prototype chain: the chain from an object’s prototype to its prototype’s prototype and onwards. And JavaScript uses this prototype chain to look for properties and methods of an object.
+
+If the property does not exist on any of the object’s prototype in its prototype chain, then the property does not exist and undefined is returned.
+
+This prototype chain mechanism is essentially the same concept we have discussed above with the prototype-based inheritance, except we are now focusing specifically on how JavaScript accesses object properties and methods via the prototype object.
+
+This example demonstrates the prototype chain of an object’s prototype object:
+
+```js
+var myFriends = {name: "Pete"};
+
+// To find the name property below, the search will begin directly on the myFriends object and will immediately find the name property because we defined the property name on the myFriend object. This could be thought of as a prototype chain with one link.
+console.log(myFriends.name);
+
+// In this example, the search for the toString () method will also begin on the myFriends’ object, but because we never created a toString method on the myFriends object, the compiler will then search for it on the myFriends prototype (the object which it inherited its properties from).
+
+// And since all objects created with the object literal inherits from Object.prototype, the toString method will be found on Object.prototype—see important note below for all properties inherited from Object.prototype. 
+
+myFriends.toString ();
+```
+
+## Object.prototype Properties Inherited by all Objects
+Tất cả object trong Javascript đều kế thừa properties và methods từ Object.prototype. Các properties và methods được kế thừa là `constructor`, `hasOwnProperty()`, `isPrototypeOf()`, `propertyIsEnumerable()`, `toLocaleString()`, `toString()`, và `valueOf`. ECMAScript 5 also adds 4 accessor methods to Object.prototype.
+
+Đây là một ví dụ khác về prototype chain:
+
+```js
+function People () {
+this.superstar = "Michael Jackson";
+}
+// Define "athlete" property on the People prototype so that "athlete" is accessible by all objects that use the People () constructor.
+People.prototype.athlete = "Tiger Woods";
+
+var famousPerson = new People ();
+famousPerson.superstar = "Steve Jobs";
+
+// The search for superstar will first look for the superstar property on the famousPerson object, and since we defined it there, that is the property that will be used. Because we have overwritten the famousPerson’s superstar property with one directly on the famousPerson object, the search will NOT proceed up the prototype chain. 
+console.log (famousPerson.superstar); // Steve Jobs
+
+// Note that in ECMAScript 5 you can set a property to read only, and in that case you cannot overwrite it as we just did.
+
+// This will show the property from the famousPerson prototype (People.prototype), since the athlete property was not defined on the famousPerson object itself.
+console.log (famousPerson.athlete); // Tiger Woods
+
+// In this example, the search proceeds up the prototype chain and find the toString method on Object.prototype, from which the Fruit object inherited—all objects ultimately inherits from Object.prototype as we have noted before.
+console.log (famousPerson.toString()); // [object Object]
+```
+
+Tất cả các buit-in constructor (`Array()`, `Number()`, `String`, etc.) đều được tạo từ Object constructor, và tất nhiên chúng có prototype là Object.prototype.
